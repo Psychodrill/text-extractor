@@ -1,4 +1,4 @@
-package zhiganov.text_extractor;
+package zhiganov.TextExtractor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
