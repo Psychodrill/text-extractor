@@ -1,13 +1,22 @@
 package zhiganov.TextExtractor.controller;
 
 
+import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
+
+//import java.io.IOException;
+//import java.nio.file.*;
+import java.io.*;
+import java.nio.file.Files;
+
 import zhiganov.TextExtractor.model.Document;
 import zhiganov.TextExtractor.service.DocumentService;
 
@@ -16,6 +25,9 @@ import zhiganov.TextExtractor.service.DocumentService;
 //@RequiredArgsConstructor
 @Tag(name="Documents", description=" API for document service")
 public class DocumentController {
+
+    @Value("${upload-path}")
+    private String uploadPath;
 
     private final DocumentService docService;
 
@@ -35,13 +47,40 @@ public class DocumentController {
         return "test string";
     }
 
-    @PostMapping
-    public ResponseEntity<String> extractData(@RequestBody Document doc){
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadData(@RequestParam("file") MultipartFile file){
 
-        final String recognized = docService.recognize(doc);
+       // String directory = uploadPath;
+       File directory = new File(uploadPath);
+
+       
+        try{
+            if(!directory.exists()){
+                directory.mkdir();
+            }
+
+            String filePath=String.format("%s/%s",directory,file.getOriginalFilename());
+            File tempFile = new File(filePath);
+
+            try (OutputStream os = new FileOutputStream(tempFile)) {
+                os.write(file.getBytes());
+            }
+            // Path filePath = directory.resolve(file.getOriginalFilename());
+            // Files.write(filePath, file.getBytes());
+            final String recognized = docService.recognize(filePath);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
+        }
+        catch(IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file" + e.getMessage());
+        }
+
+
         
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
-        //return recognized;
+        
+        
+        
+        
+       //return ResponseEntity.status(HttpStatus.ACCEPTED).body("recognized");
 
     }   
 

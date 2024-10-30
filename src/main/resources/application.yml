@@ -1,7 +1,7 @@
 #spring.application.name=text-extractor
 spring:
   application:
-    name: timesheet
+    name: TextExtractor
   datasource:
     url: jdbc:h2:mem:test
     username: sa
@@ -9,3 +9,4 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     show-sql: true
+upload-path: src/main/resources/upload
