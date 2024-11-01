@@ -16,15 +16,14 @@ public class DocumentService {
     public String recognize(String filePath) {
 
         File image = new File(filePath);
-        System.out.println("1");
+        
         Tesseract tesseract = new Tesseract();
-        System.out.println("1");
+        
         tesseract.setDatapath("src/main/resources/tessdata");
-        System.out.println("1");
+        
         tesseract.setLanguage("eng");
         tesseract.setPageSegMode(1);
-        tesseract.setOcrEngineMode(1);
-        System.out.println("1");
+        tesseract.setOcrEngineMode(2);
         String result=null;
         try {
             result = tesseract.doOCR(image);

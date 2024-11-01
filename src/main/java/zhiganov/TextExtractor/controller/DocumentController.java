@@ -18,7 +18,8 @@ import java.io.*;
 import java.nio.file.Files;
 
 import zhiganov.TextExtractor.model.Document;
-import zhiganov.TextExtractor.service.DocumentService;
+import zhiganov.TextExtractor.service.*;
+
 
 @RestController
 @RequestMapping("/documents")
@@ -30,9 +31,11 @@ public class DocumentController {
     private String uploadPath;
 
     private final DocumentService docService;
+    private final DocumentServiceFactory docServiceFactory;
 
-    public DocumentController(DocumentService docService){
+    public DocumentController(DocumentService docService, DocumentServiceFactory docServiceFactory){
         this.docService=docService;
+        this.docServiceFactory= docServiceFactory;
     }
 
     @GetMapping("/{id}")
