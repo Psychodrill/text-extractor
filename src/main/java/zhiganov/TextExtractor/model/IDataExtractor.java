@@ -3,18 +3,19 @@ package zhiganov.TextExtractor.model;
 public abstract interface IDataExtractor {
 
     public interface IImageTextExtractor {
-        String extractData();
+        String imageExtractData();
 
     }
     public interface IPdfTextExtractor {
-        String extractData();
+        String pdfExtractData();
 
     }
     public interface IWordTextExtractor {
-        String extractData();
+        String wordExtractData();
 
     }
 
+    String extractText();
     String getType();
 
 

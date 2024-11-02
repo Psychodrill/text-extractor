@@ -9,4 +9,15 @@ spring:
     driver-class-name: org.h2.Driver
   jpa:
     show-sql: true
-upload-path: src/main/resources/upload
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+application:
+  uploadpath: src/main/resources/upload
+  image:
+    extensions:
+    - png
+    - jpg
+    - gif
+    - bmp
