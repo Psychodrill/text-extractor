@@ -1,21 +1,23 @@
 package zhiganov.TextExtractor.model;
 
-public abstract interface IDataExtractor {
+import java.io.File;
 
-    public interface IImageTextExtractor {
-        String imageExtractData();
+public interface IDataExtractor {
 
-    }
-    public interface IPdfTextExtractor {
-        String pdfExtractData();
+    // public interface IImageTextExtractor {
+    //     String imageExtractData();
 
-    }
-    public interface IWordTextExtractor {
-        String wordExtractData();
+    // }
+    // public interface IPdfTextExtractor {
+    //     String pdfExtractData();
 
-    }
+    // }
+    // public interface IWordTextExtractor {
+    //     String wordExtractData();
 
-    String extractText();
+    // }
+
+    String extractText(String filePath);
     String getType();
 
 

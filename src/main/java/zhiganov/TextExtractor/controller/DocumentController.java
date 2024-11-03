@@ -66,28 +66,30 @@ public class DocumentController {
 
         String type = stringArray[stringArray.length-1];
         System.out.println(type);
-        IDataExtractor asd =docServiceFactory.getExtractor(type);
+        IDataExtractor dataExtractor =docServiceFactory.getExtractor(type);
         
-         System.out.println(asd.getType());
-        // try{
-        //     if(!directory.exists()){
-        //         directory.mkdir();
-        //     }
+        // System.out.println(asd.getType());
+        
+        try{
+            if(!directory.exists()){
+                directory.mkdir();
+            }
 
-        //     String filePath=String.format("%s/%s",directory,file.getOriginalFilename());
-        //     File tempFile = new File(filePath);
+            String filePath=String.format("%s/%s",directory,file.getOriginalFilename());
+            File tempFile = new File(filePath);
 
-        //     try (OutputStream os = new FileOutputStream(tempFile)) {
-        //         os.write(file.getBytes());
-        //     }
-        //     // Path filePath = directory.resolve(file.getOriginalFilename());
-        //     // Files.write(filePath, file.getBytes());
-        //     final String recognized = docService.recognize(filePath);
-        //     return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
-        // }
-        // catch(IOException e){
-        //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file" + e.getMessage());
-        // }
+            try (OutputStream os = new FileOutputStream(tempFile)) {
+                os.write(file.getBytes());
+            }
+            // Path filePath = directory.resolve(file.getOriginalFilename());
+            // Files.write(filePath, file.getBytes());
+          //  final String recognized = docService.recognize(filePath);
+            final String recognized = dataExtractor.extractText(filePath);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
+        }
+        catch(IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file" + e.getMessage());
+        }
 
 
         
@@ -95,7 +97,7 @@ public class DocumentController {
         
         
         
-       return ResponseEntity.status(HttpStatus.ACCEPTED).body("recognized");
+       //return ResponseEntity.status(HttpStatus.ACCEPTED).body("recognized");
 
     }   
 
