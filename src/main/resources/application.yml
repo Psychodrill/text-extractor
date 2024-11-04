@@ -7,8 +7,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-  jpa:
-    show-sql: true
+#  jpa:
+#    show-sql: true
   servlet:
     multipart:
       max-file-size: 50MB
@@ -21,3 +21,8 @@ application:
     - jpg
     - gif
     - bmp
+tesseract:
+  datapath: src/main/resources/tessdata
+  language: eng+rus
+  pagemode: 1
+  enginemode: 2

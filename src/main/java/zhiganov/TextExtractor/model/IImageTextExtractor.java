@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 public interface IImageTextExtractor {
 
- String imageExtractData(String filePath, BufferedImage bufImage);
+ String imageExtractData(String filePath);
+ String imageExtractData(BufferedImage bufImage);
 
 }
