@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class WordTextExtractor implements IDataExtractor{
     }
 
     @Override
-    public String extractText(String filePath) {
+    public String extractText(String filePath){
 
         String result = "";
         File file =new File(filePath);
