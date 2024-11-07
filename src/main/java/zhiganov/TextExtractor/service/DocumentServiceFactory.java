@@ -31,7 +31,7 @@ public class DocumentServiceFactory {
         else{
             extractor = extractorsCache.get(type);
         }
-        if(extractor == null) throw new RuntimeException("Unknown extractor type: " + type);
+        //if(extractor == null) throw new RuntimeException("Unknown extractor type: " + type);
         return extractor;
     }
 

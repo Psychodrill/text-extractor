@@ -18,14 +18,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import java.io.*;
 import java.util.*;
 
 import zhiganov.TextExtractor.model.Document;
 import zhiganov.TextExtractor.model.IDataExtractor;
-import zhiganov.TextExtractor.repository.IDocumentRepository;
 import zhiganov.TextExtractor.service.*;
 
 @Data
@@ -33,13 +31,13 @@ import zhiganov.TextExtractor.service.*;
 @RequestMapping("/documents")
 //@RequiredArgsConstructor
 @Tag(name="Documents", description=" API for document service")
-//@Component
-@ConfigurationProperties("application")
-//@ConfigurationPropertiesScan
+
+//@ConfigurationProperties("application")
+
 public class DocumentController {
 
-    //@Value("${application.upload-path}")
-    private String uploadpath;
+
+    //private String uploadpath;
     //@Autowired
     private final DocumentService docService;
     //@Autowired
@@ -77,31 +75,21 @@ public class DocumentController {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadData(@RequestParam("file") MultipartFile file){
 
-        File directory = new File(uploadpath);     
-        String name = file.getOriginalFilename();
-        var stringArray= name.split("\\.");
-        String type = stringArray[stringArray.length-1];
-        IDataExtractor dataExtractor=null;
-
-        Document doc =docService.addDocument(file);
-
+         //File directory = new File(uploadpath);     
+        // String name = file.getOriginalFilename();
+        // var stringArray= name.split("\\.");
+        // String type = stringArray[stringArray.length-1];
+    
         try{
-            dataExtractor =docServiceFactory.getExtractor(type);
-        }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to upload file with extension " +type + " " + e.getMessage());
-        }    
-        try{
-            if(!directory.exists()){
-                directory.mkdir();
-            }
-            String filePath=String.format("%s/%s",directory,file.getOriginalFilename());
-            File tempFile = new File(filePath);
 
-            OutputStream os = new FileOutputStream(tempFile);
-            os.write(file.getBytes());
-  
-            final String recognized = dataExtractor.extractText(filePath);
+            // String filePath=String.format("%s/%s",directory,file.getOriginalFilename());
+            // File tempFile = new File(filePath);
+
+            // OutputStream os = new FileOutputStream(tempFile);
+            // os.write(file.getBytes());
+            
+            final String recognized =docService.acceptDocument(file);
+            //final String recognized = dataExtractor.extractText(filePath);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
         }
         catch(Exception e){
