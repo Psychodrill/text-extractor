@@ -2,17 +2,22 @@
 spring:
   application:
     name: TextExtractor
-  datasource:
-    url: jdbc:h2:mem:test
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+  # datasource:
+  #   url: jdbc:h2:mem:test
+  #   username: sa
+  #   password:
+  #   driver-class-name: org.h2.Driver
 #  jpa:
 #    show-sql: true
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: received-documents
 application:
   uploadpath: src/main/resources/upload
   image:
