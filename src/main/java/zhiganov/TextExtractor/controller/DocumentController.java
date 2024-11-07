@@ -1,16 +1,13 @@
 package zhiganov.TextExtractor.controller;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,8 +19,8 @@ import lombok.Data;
 import java.io.*;
 import java.util.*;
 
-import zhiganov.TextExtractor.model.Document;
-import zhiganov.TextExtractor.model.IDataExtractor;
+import zhiganov.TextExtractor.model.*;
+
 import zhiganov.TextExtractor.service.*;
 
 @Data
@@ -32,8 +29,6 @@ import zhiganov.TextExtractor.service.*;
 //@RequiredArgsConstructor
 @Tag(name="Documents", description=" API for document service")
 
-//@ConfigurationProperties("application")
-
 public class DocumentController {
 
 
@@ -41,61 +36,107 @@ public class DocumentController {
     //@Autowired
     private final DocumentService docService;
     //@Autowired
-    private final DocumentServiceFactory docServiceFactory;
+    private final DocumentExtractorFactory docServiceFactory;
     //@Autowired
     //private final IDocumentRepository docRepository;
 
-    public DocumentController(DocumentService docService, DocumentServiceFactory docServiceFactory){
+    public DocumentController(DocumentService docService, DocumentExtractorFactory docServiceFactory){
         this.docService=docService;
         this.docServiceFactory= docServiceFactory;
         //this.docRepository=docRepository;
     }
 
+    @Operation(
+        summary = "Get File By Id",
+        description = "Returns File By Id",
+        responses = {
+            @ApiResponse(description = "Success", responseCode="200", content =@Content(schema =@Schema(implementation = Document.class))),
+            @ApiResponse(description = "Not Found",responseCode="404", content =@Content(schema =@Schema(implementation = Void.class)))
+           
+        }
+    )
     @GetMapping("/{id}")
-    public String getDataById(@PathVariable String id){
+    public ResponseEntity<Document> getDataById(@PathVariable String id){
+        Optional<Document> optDoc =  docService.findById(id);
+        if(optDoc.isPresent()){
+            //return ResponseEntity.ok().body(ts.get());
+            return ResponseEntity.status(HttpStatus.OK).body(optDoc.get());
+        }
+        return ResponseEntity.notFound().build();
 
-        Optional<Document> doc =  docService.findById(id);
-        // if(ts.isPresent()){
-        //     //return ResponseEntity.ok().body(ts.get());
-        //     return ResponseEntity.status(HttpStatus.OK).body(ts.get());
-        // }
-        // return ResponseEntity.notFound().build();
-        return "test string";
+    }
+
+    @Operation(
+        summary = "Get All Files",
+        description = "Returns All Recognized Documents",
+        responses = {
+            @ApiResponse(description = "Success", responseCode="200", content =@Content(schema =@Schema(implementation = List.class))),
+            @ApiResponse(description = "Not Found",responseCode="404", content =@Content(schema =@Schema(implementation = Void.class)))
+           
+        }
+    )
+    @GetMapping("/")
+    public ResponseEntity<List<Document>> findAll(){
+        Optional<List<Document>> optDoc =  Optional.of(docService.findAll());
+        if(optDoc.isPresent()){
+            //return ResponseEntity.ok().body(ts.get());
+            return ResponseEntity.status(HttpStatus.OK).body(optDoc.get());
+        }
+        return ResponseEntity.notFound().build();
+
     }
 
     @Operation(
         summary = "Upload file",
-        description = "Upload File ant Returns ?",
+        description = "Upload File ant Returns Document in DB",
         responses = {
-            @ApiResponse(description = "Success", responseCode="202", content =@Content(schema =@Schema(implementation = String.class))),
+            @ApiResponse(description = "Accepted", responseCode="202", content =@Content(schema =@Schema(implementation = Document.class))),
             @ApiResponse(description = "Bad Request",responseCode="400", content =@Content(schema =@Schema(implementation = Void.class))),
             @ApiResponse(description = "Internal Server Error",responseCode="500", content =@Content(schema =@Schema(implementation = Void.class)))       
         }
     )
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadData(@RequestParam("file") MultipartFile file){
-
-         //File directory = new File(uploadpath);     
-        // String name = file.getOriginalFilename();
-        // var stringArray= name.split("\\.");
-        // String type = stringArray[stringArray.length-1];
+    public ResponseEntity<Document> uploadData(@RequestParam("file") MultipartFile file){
     
         try{
 
-            // String filePath=String.format("%s/%s",directory,file.getOriginalFilename());
-            // File tempFile = new File(filePath);
+            final Document recognized =docService.acceptDocument(file);
 
-            // OutputStream os = new FileOutputStream(tempFile);
-            // os.write(file.getBytes());
-            
-            final String recognized =docService.acceptDocument(file);
-            //final String recognized = dataExtractor.extractText(filePath);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
         }
-        catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file" + e.getMessage());
+        catch(IOException e){
+            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        catch(ExtractorException e){
+            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to upload file with this extension " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-    }   
+        catch(RuntimeException e){
+            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to upload file with this extension " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        catch(Exception e){
+            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Oops, something gone wrong " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+    @Operation(
+        summary = "Delete All",
+        description = "Delete All Received Documents From DB",
+        responses = {
+            @ApiResponse(description = "No Content",responseCode="204", content =@Content(schema =@Schema(implementation = Void.class)))
+           
+        }
+    )
+    @DeleteMapping
+    public ResponseEntity<Void> deleteAll(){
+        docService.deleteAll();
+
+        return ResponseEntity.noContent().build();
+
+    }
 
 }

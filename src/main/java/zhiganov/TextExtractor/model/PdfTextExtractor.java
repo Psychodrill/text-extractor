@@ -17,7 +17,8 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.text.PDFTextStripper;
 
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class PdfTextExtractor implements IDataExtractor{
@@ -53,15 +54,15 @@ public class PdfTextExtractor implements IDataExtractor{
 
                         }
                     } catch (MissingImageReaderException mex) {
-                    // log.warn("Missing Image Reader for format: ", mex);
-                    
+                     log.warn("Missing Image Reader for format: ", mex);
+
                     }
                 }
             }
             
         }
         catch(IOException ex){
-
+            throw new ExtractorException(ex.getMessage(), ex);
         }
         return result;
     }

@@ -2,6 +2,7 @@ package zhiganov.TextExtractor.service;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,10 @@ import zhiganov.TextExtractor.model.Document;
 import zhiganov.TextExtractor.model.IDataExtractor;
 import zhiganov.TextExtractor.repository.IDocumentRepository;
 
-import com.mongodb.DBObject;
+import lombok.Data;
 
 
-
+@Data
 @Service
 @ConfigurationProperties("application")
 public class DocumentService {
@@ -29,9 +30,9 @@ public class DocumentService {
     private String uploadpath;
     //@Autowired
     private final IDocumentRepository docRepository;
-    private final DocumentServiceFactory docServiceFactory;
+    private final DocumentExtractorFactory docServiceFactory;
 
-    public DocumentService (IDocumentRepository docRepository, DocumentServiceFactory docServiceFactory){
+    public DocumentService (IDocumentRepository docRepository, DocumentExtractorFactory docServiceFactory){
         this.docRepository=docRepository;
         this.docServiceFactory= docServiceFactory;
     }
@@ -42,10 +43,10 @@ public class DocumentService {
     }
 
 
-    public String acceptDocument(MultipartFile file) throws Exception{
+    public Document acceptDocument(MultipartFile file) throws Exception{
 
 
-        saveTempFile(file, uploadpath);
+        File tempFile =saveTempFile(file, uploadpath);
 
         IDataExtractor dataExtractor=null;
         String name = file.getOriginalFilename();
@@ -54,23 +55,13 @@ public class DocumentService {
         dataExtractor =docServiceFactory.getExtractor(type);
         if(dataExtractor == null) throw new RuntimeException("Unknown extractor type: " + type);
 
-        saveFileinDB(file);
+        String recognized = dataExtractor.extractText(tempFile.getPath());
+        
 
-                    
-       // try{
-
-        //}
-        //catch(Exception e){
-            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to upload file with extension " +type + " " + e.getMessage());
-       // }
-        //final String recognized = dataExtractor.extractText(filePath);
-        //return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
-
-
-        return dataExtractor.extractText(uploadpath);
+        return saveFileinDB(file, recognized);
     }
 
-    private void saveTempFile(MultipartFile file, String uploadPath) throws IOException{
+    private File saveTempFile(MultipartFile file, String uploadPath) throws IOException{
 
         File directory = new File(uploadpath); 
         if(!directory.exists()){
@@ -80,17 +71,28 @@ public class DocumentService {
         File tempFile = new File(filePath);
         OutputStream os = new FileOutputStream(tempFile);
         os.write(file.getBytes());
+        return tempFile;
 
 
     }
-    private void saveFileinDB(MultipartFile file) throws IOException{
+    private Document saveFileinDB(MultipartFile file, String recognized) throws IOException{
         Document doc = new Document();
         doc.setName(file.getOriginalFilename());
         doc.setDate(LocalDate.now());
        
-        doc.setContent(file.getBytes());
-       
-        docRepository.insert(doc);
+        //doc.setContent(file.getBytes());
+        doc.setRecognized(recognized);
+        return docRepository.insert(doc);
+
+    }
+
+    public void deleteAll() {
+        docRepository.deleteAll();
+    }
+
+
+    public List<Document> findAll() {
+        return docRepository.findAll();
     }
 
 }
