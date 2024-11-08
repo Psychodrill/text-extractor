@@ -2,7 +2,7 @@ package zhiganov.TextExtractor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.*;
-import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+//import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import zhiganov.TextExtractor.repository.IDocumentRepository;

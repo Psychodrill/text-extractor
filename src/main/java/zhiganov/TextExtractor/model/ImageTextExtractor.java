@@ -39,7 +39,7 @@ public class ImageTextExtractor implements IDataExtractor, IImageTextExtractor{
         } catch (TesseractException e) {
 
             e.printStackTrace();
-            throw new ExtractorException(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         }
         return recognized;
     }
@@ -68,7 +68,7 @@ public class ImageTextExtractor implements IDataExtractor, IImageTextExtractor{
         } catch (TesseractException e) {
 
             e.printStackTrace();
-            throw new ExtractorException(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         }
         return recognized;
     }

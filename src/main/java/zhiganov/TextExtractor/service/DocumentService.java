@@ -1,21 +1,22 @@
 package zhiganov.TextExtractor.service;
 
-import java.nio.file.Path;
+//import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+// import org.springframework.http.HttpStatus;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import zhiganov.TextExtractor.model.Document;
 import zhiganov.TextExtractor.model.IDataExtractor;
+import zhiganov.TextExtractor.model.NotFoundExtractorException;
 import zhiganov.TextExtractor.repository.IDocumentRepository;
 
 import lombok.Data;
@@ -53,7 +54,7 @@ public class DocumentService {
         String [] stringArray= name.split("\\.");
         String type = stringArray[stringArray.length-1];
         dataExtractor =docServiceFactory.getExtractor(type);
-        if(dataExtractor == null) throw new RuntimeException("Unknown extractor type: " + type);
+        if(dataExtractor == null) throw new NotFoundExtractorException("Unknown extractor type: " + type);
 
         String recognized = dataExtractor.extractText(tempFile.getPath());
         

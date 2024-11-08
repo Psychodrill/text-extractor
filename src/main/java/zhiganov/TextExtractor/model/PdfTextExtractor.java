@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PdfTextExtractor implements IDataExtractor{
 
-
     private final IImageTextExtractor imageTextExtractor;
 
     @Override
@@ -62,7 +61,7 @@ public class PdfTextExtractor implements IDataExtractor{
             
         }
         catch(IOException ex){
-            throw new ExtractorException(ex.getMessage(), ex);
+            throw new RuntimeException(ex.getMessage(), ex);
         }
         return result;
     }

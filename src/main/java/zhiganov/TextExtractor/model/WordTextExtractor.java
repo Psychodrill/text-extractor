@@ -55,7 +55,7 @@ public class WordTextExtractor implements IDataExtractor{
         }
         catch(IOException ex){
             ex.printStackTrace();
-            throw new ExtractorException(ex.getMessage(), ex);
+            throw new RuntimeException(ex.getMessage(), ex);
         }
         
         return result;

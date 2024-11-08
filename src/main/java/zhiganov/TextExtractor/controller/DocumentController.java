@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 
-import java.io.*;
+//import java.io.*;
 import java.util.*;
 
 import zhiganov.TextExtractor.model.*;
@@ -104,16 +104,7 @@ public class DocumentController {
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
         }
-        catch(IOException e){
-            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        catch(ExtractorException e){
-            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to upload file with this extension " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        catch(RuntimeException e){
+        catch(NotFoundExtractorException e){
             //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to upload file with this extension " + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
