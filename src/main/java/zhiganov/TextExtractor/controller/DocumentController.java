@@ -14,16 +14,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Data;
 
-//import java.io.*;
 import java.util.*;
 
+import zhiganov.TextExtractor.exception.NotFoundExtractorException;
 import zhiganov.TextExtractor.model.*;
 
 import zhiganov.TextExtractor.service.*;
 
-@Data
+//@Data
 @RestController
 @RequestMapping("/documents")
 //@RequiredArgsConstructor
@@ -31,19 +30,11 @@ import zhiganov.TextExtractor.service.*;
 
 public class DocumentController {
 
-
-    //private String uploadpath;
-    //@Autowired
     private final DocumentService docService;
-    //@Autowired
-    private final DocumentExtractorFactory docServiceFactory;
-    //@Autowired
-    //private final IDocumentRepository docRepository;
 
-    public DocumentController(DocumentService docService, DocumentExtractorFactory docServiceFactory){
+    public DocumentController(DocumentService docService){
         this.docService=docService;
-        this.docServiceFactory= docServiceFactory;
-        //this.docRepository=docRepository;
+
     }
 
     @Operation(
@@ -56,7 +47,7 @@ public class DocumentController {
         }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<Document> getDataById(@PathVariable String id){
+    public ResponseEntity<Document> getDocumentById(@PathVariable String id){
         Optional<Document> optDoc =  docService.findById(id);
         if(optDoc.isPresent()){
             //return ResponseEntity.ok().body(ts.get());

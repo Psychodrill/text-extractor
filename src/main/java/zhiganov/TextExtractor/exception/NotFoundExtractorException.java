@@ -1,4 +1,4 @@
-package zhiganov.TextExtractor.model;
+package zhiganov.TextExtractor.exception;
 
 public class NotFoundExtractorException extends RuntimeException {
 

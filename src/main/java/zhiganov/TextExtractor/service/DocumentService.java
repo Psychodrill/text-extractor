@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 // import org.springframework.http.HttpStatus;
 // import org.springframework.http.ResponseEntity;
 // import org.springframework.stereotype.Component;
@@ -14,30 +14,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+
+import zhiganov.TextExtractor.exception.NotFoundExtractorException;
+import zhiganov.TextExtractor.factory.DocumentExtractorFactory;
 import zhiganov.TextExtractor.model.Document;
 import zhiganov.TextExtractor.model.IDataExtractor;
-import zhiganov.TextExtractor.model.NotFoundExtractorException;
 import zhiganov.TextExtractor.repository.IDocumentRepository;
 
-import lombok.Data;
 
-
-@Data
 @Service
+//@ConfigurationPropertiesScan
 @ConfigurationProperties("application")
 public class DocumentService {
 
-
     private String uploadpath;
-    //@Autowired
+    //private String uploadpath = "src/main/resources/upload";
+
     private final IDocumentRepository docRepository;
-    private final DocumentExtractorFactory docServiceFactory;
+    private final DocumentExtractorFactory docExtractorFactory;
 
-    public DocumentService (IDocumentRepository docRepository, DocumentExtractorFactory docServiceFactory){
+    public DocumentService (IDocumentRepository docRepository, DocumentExtractorFactory docExtractorFactory){
         this.docRepository=docRepository;
-        this.docServiceFactory= docServiceFactory;
+        this.docExtractorFactory= docExtractorFactory;
     }
-
 
     public Optional<Document> findById(String id) {
         return docRepository.findById(id);
@@ -53,7 +52,7 @@ public class DocumentService {
         String name = file.getOriginalFilename();
         String [] stringArray= name.split("\\.");
         String type = stringArray[stringArray.length-1];
-        dataExtractor =docServiceFactory.getExtractor(type);
+        dataExtractor =docExtractorFactory.getExtractor(type);
         if(dataExtractor == null) throw new NotFoundExtractorException("Unknown extractor type: " + type);
 
         String recognized = dataExtractor.extractText(tempFile.getPath());
@@ -74,7 +73,6 @@ public class DocumentService {
         os.write(file.getBytes());
         return tempFile;
 
-
     }
     private Document saveFileinDB(MultipartFile file, String recognized) throws IOException{
         Document doc = new Document();
@@ -90,7 +88,6 @@ public class DocumentService {
     public void deleteAll() {
         docRepository.deleteAll();
     }
-
 
     public List<Document> findAll() {
         return docRepository.findAll();
