@@ -6,10 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.stereotype.Component;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,19 +14,17 @@ import java.io.*;
 
 import zhiganov.TextExtractor.exception.NotFoundExtractorException;
 import zhiganov.TextExtractor.factory.DocumentExtractorFactory;
+
 import zhiganov.TextExtractor.model.Document;
 import zhiganov.TextExtractor.model.IDataExtractor;
 import zhiganov.TextExtractor.repository.IDocumentRepository;
 
-
 @Service
-//@ConfigurationPropertiesScan
 @ConfigurationProperties("application")
 public class DocumentService {
 
     private String uploadpath;
     //private String uploadpath = "src/main/resources/upload";
-
     private final IDocumentRepository docRepository;
     private final DocumentExtractorFactory docExtractorFactory;
 
@@ -42,9 +37,7 @@ public class DocumentService {
         return docRepository.findById(id);
     }
 
-
     public Document acceptDocument(MultipartFile file) throws Exception{
-
 
         File tempFile =saveTempFile(file, uploadpath);
 
@@ -57,7 +50,6 @@ public class DocumentService {
 
         String recognized = dataExtractor.extractText(tempFile.getPath());
         
-
         return saveFileinDB(file, recognized);
     }
 

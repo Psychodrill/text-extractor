@@ -25,7 +25,6 @@ import zhiganov.TextExtractor.service.*;
 //@Data
 @RestController
 @RequestMapping("/documents")
-//@RequiredArgsConstructor
 @Tag(name="Documents", description=" API for document service")
 
 public class DocumentController {
@@ -90,7 +89,8 @@ public class DocumentController {
     public ResponseEntity<Document> uploadData(@RequestParam("file") MultipartFile file){
     
         try{
-
+            // String recognized = docService.uploadPath();
+            // return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Document());
             final Document recognized =docService.acceptDocument(file);
 
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(recognized);
@@ -104,7 +104,7 @@ public class DocumentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
-    }
+     }
     @Operation(
         summary = "Delete All",
         description = "Delete All Received Documents From DB",

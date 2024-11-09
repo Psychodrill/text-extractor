@@ -8,7 +8,6 @@ import zhiganov.TextExtractor.repository.IDocumentRepository;
 
 
 @SpringBootApplication
-//@EnableAutoConfiguration
 @EnableMongoRepositories(basePackageClasses = IDocumentRepository.class)
 //@SpringBootApplication(exclude="zhiganov.TextExtractor.repository")
 public class TextExtractorApplication {
