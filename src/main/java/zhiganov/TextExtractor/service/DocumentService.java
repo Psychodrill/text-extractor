@@ -37,6 +37,7 @@ public class DocumentService {
         return docRepository.findById(id);
     }
 
+   //@Logging
     public Document acceptDocument(MultipartFile file) throws Exception{
 
         File tempFile =saveTempFile(file, uploadpath);
