@@ -1,7 +1,7 @@
 #spring.application.name=text-extractor
 spring:
   application:
-    name: TextExtractor
+    name: Textractor
   # datasource:
   #   url: jdbc:h2:mem:test
   #   username: sa

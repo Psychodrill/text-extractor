@@ -9,13 +9,12 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>zhiganov</groupId>
-	<artifactId>text-extractor</artifactId>
+	<artifactId>textractor</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>logging-starter</module>
 	</modules>
-	<name>text-extractor</name>
+	<name>textractor</name>
 	<description>Exam project for java developer</description>
 	<url/>
 	<licenses>
@@ -108,18 +107,19 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
+						<!-- <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>${maven-jar-plugin.version}</version>             
 				<configuration>
 					<archive>
 						<manifest>
-						<mainClass>czhiganov.TextExtractor</mainClass>
+						<mainClass>zhiganov.textractor</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
+			</plugin> -->
+
 		</plugins>
 	</build>
 	<dependencyManagement>
